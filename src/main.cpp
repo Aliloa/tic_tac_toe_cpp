@@ -18,12 +18,52 @@ int draw_game_board(char board[9])
     return 0;
 }
 
+void draw_help_board()
+{
+    std::cout << "| 1 | 2 | 3 |\n";
+    std::cout << "| 4 | 5 | 6 |\n";
+    std::cout << "| 7 | 8 | 9 |\n";
+}
+
 int play(Player currentPlayer)
 {
     std::cout << "Tour de " << currentPlayer.name << " : ";
-    int value{};
-    std::cin >> value;
-    board[value - 1] = currentPlayer.symbol;
+    std::string input;
+    std::cin >> input;
+    for (char &c : input)
+    {
+        c = std::tolower(c);
+    }
+    if (input == "help")
+    {
+        draw_help_board();
+        return 2;
+    }
+    int value = {};
+    try
+    {
+        value = std::stoi(input);
+    }
+    catch (const std::invalid_argument &)
+    {
+        std::cout << "valeur invalide.\n";
+        return 2;
+    }
+
+    if (value < 1 || value > 9)
+    {
+        std::cout << "valeur invalide.\n";
+        return 2;
+    }
+
+    if (board[value - 1] == '.')
+    {
+        board[value - 1] = currentPlayer.symbol;
+    }
+    else
+    {
+        return 1;
+    }
     return 0;
 }
 
@@ -47,8 +87,6 @@ char check_win()
 
         if (board[a] != '.' && board[a] == board[b] && board[a] == board[c])
         {
-            std::cout << board[a] << "\n=== A GAGNE ===\n";
-
             return board[a];
         }
     }
@@ -75,7 +113,14 @@ int main()
     for (int i = 0; i < 9; i++)
     {
         Player current_player = players[i % 2];
-        play(current_player);
+        int result;
+        do
+        {
+            result = play(current_player);
+            if (result == 1)
+                std::cout << "cette case est deja prise" << std::endl;
+        } while (result != 0);
+
         draw_game_board(board);
         char winner = check_win();
         if (winner != '.')
