@@ -4,6 +4,8 @@
 
 Player createPlayer(int p)
 {
+    std::cout << "=== CREATEUR DE PERSONNAGE " << p << " ===" << std::endl;
+
     Player player;
 
     std::cout << "Entrez le nom du joueur : ";
@@ -24,6 +26,8 @@ Player createPlayer(int p)
             std::cout << "Erreur : entrez seulement 'x' ou 'o'" << std::endl;
         }
     }
-
+    std::cout << "=== PERSONNAGE" << p << " CREE ===" << std::endl;
+    std::cout << "Nom : " << player.name << "\n";
+    std::cout << "Symbole : " << player.symbol << "\n";
     return player;
 }

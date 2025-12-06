@@ -1,0 +1,109 @@
+#include "Game.hpp"
+#include <iostream>
+#include <random>
+
+char board[9] = {'.', '.', '.', '.', '.', '.', '.', '.', '.'};
+
+int draw_game_board(char board[9])
+{
+    for (int i = 0; i < 9; i++)
+    {
+        if (i % 3 == 0)
+            std::cout << "| ";
+
+        std::cout << board[i] << " | ";
+
+        if ((i + 1) % 3 == 0) // quand i+1 est divisble par 3
+            std::cout << std::endl;
+    }
+    return 0;
+}
+
+void draw_help_board()
+{
+    std::cout << "| 1 | 2 | 3 |\n";
+    std::cout << "| 4 | 5 | 6 |\n";
+    std::cout << "| 7 | 8 | 9 |\n";
+}
+
+int play(Player currentPlayer)
+{
+    std::cout << "Tour de " << currentPlayer.name << " : ";
+    std::string input;
+    std::cin >> input;
+    for (char &c : input)
+    {
+        c = std::tolower(c);
+    }
+    if (input == "help")
+    {
+        draw_help_board();
+        return 2;
+    }
+    int value = {};
+    try
+    {
+        value = std::stoi(input);
+    }
+    catch (const std::invalid_argument &)
+    {
+        std::cout << "valeur invalide.\n";
+        return 2;
+    }
+
+    if (value < 1 || value > 9)
+    {
+        std::cout << "valeur invalide.\n";
+        return 2;
+    }
+
+    if (board[value - 1] == '.')
+    {
+        board[value - 1] = currentPlayer.symbol;
+    }
+    else
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int ai_play(Player current_player) {
+    std::cout << "Tour de : " << current_player.name << std::endl;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 8);
+    int value = {};
+    do {
+        value = distrib(gen);
+    } while (board[value] != '.');
+
+    board[value] = current_player.symbol;
+    return 0;
+}
+
+char check_win()
+{
+    int win_condition[8][3] = {
+        {0, 1, 2},
+        {3, 4, 5},
+        {6, 7, 8},
+        {0, 3, 6},
+        {1, 4, 7},
+        {2, 5, 8},
+        {0, 4, 8},
+        {2, 4, 6}};
+    win_condition[1][2];
+    for (int i = 0; i < 8; i++)
+    {
+        int a = win_condition[i][0];
+        int b = win_condition[i][1];
+        int c = win_condition[i][2];
+
+        if (board[a] != '.' && board[a] == board[b] && board[a] == board[c])
+        {
+            return board[a];
+        }
+    }
+    return '.';
+}

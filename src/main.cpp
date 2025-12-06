@@ -1,125 +1,62 @@
 #include <iostream>
-#include "Player.hpp"
+#include <limits>
+#include "player/Player.hpp"
+#include "game/Game.hpp"
 
-char board[9] = {'.', '.', '.', '.', '.', '.', '.', '.', '.'};
-
-int draw_game_board(char board[9])
+enum GameMode
 {
-    for (int i = 0; i < 9; i++)
-    {
-        if (i % 3 == 0)
-            std::cout << "| ";
+    multiplayer,
+    ai
+};
 
-        std::cout << board[i] << " | ";
-
-        if ((i + 1) % 3 == 0) // quand i+1 est divisble par 3
-            std::cout << std::endl;
-    }
-    return 0;
-}
-
-void draw_help_board()
+GameMode select_mode()
 {
-    std::cout << "| 1 | 2 | 3 |\n";
-    std::cout << "| 4 | 5 | 6 |\n";
-    std::cout << "| 7 | 8 | 9 |\n";
-}
-
-int play(Player currentPlayer)
-{
-    std::cout << "Tour de " << currentPlayer.name << " : ";
-    std::string input;
-    std::cin >> input;
-    for (char &c : input)
-    {
-        c = std::tolower(c);
-    }
-    if (input == "help")
-    {
-        draw_help_board();
-        return 2;
-    }
-    int value = {};
-    try
-    {
-        value = std::stoi(input);
-    }
-    catch (const std::invalid_argument &)
-    {
-        std::cout << "valeur invalide.\n";
-        return 2;
-    }
-
-    if (value < 1 || value > 9)
-    {
-        std::cout << "valeur invalide.\n";
-        return 2;
-    }
-
-    if (board[value - 1] == '.')
-    {
-        board[value - 1] = currentPlayer.symbol;
-    }
+    std::cout << "=== SELECTIONNER UN MODE ===" << std::endl;
+    std::cout << "1-multiplayer ou 2-ia : ";
+    int choix = {1};
+    std::cin >> choix;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (choix == 1)
+        return GameMode::multiplayer;
     else
-    {
-        return 1;
-    }
-    return 0;
-}
-
-char check_win()
-{
-    int win_condition[8][3] = {
-        {0, 1, 2},
-        {3, 4, 5},
-        {6, 7, 8},
-        {0, 3, 6},
-        {1, 4, 7},
-        {2, 5, 8},
-        {0, 4, 8},
-        {2, 4, 6}};
-    win_condition[1][2];
-    for (int i = 0; i < 8; i++)
-    {
-        int a = win_condition[i][0];
-        int b = win_condition[i][1];
-        int c = win_condition[i][2];
-
-        if (board[a] != '.' && board[a] == board[b] && board[a] == board[c])
-        {
-            return board[a];
-        }
-    }
-    return '.';
+        return GameMode::ai;
 }
 
 int main()
 {
-    std::cout << "=== CREATEUR DE PERSONNAGE ===\n\n";
+    GameMode mode = select_mode();
     Player p1 = createPlayer(1);
 
-    std::cout << "\n=== PERSONNAGE CREE ===\n";
-    std::cout << "Nom : " << p1.name << "\n";
-    std::cout << "Symbole : " << p1.symbol << "\n";
-
-    Player p2 = createPlayer(2);
+    Player p2;
+    if (mode == multiplayer)
+    {
+        p2 = createPlayer(2);
+    }
+    else
+    {
+        p2.name = "AI";
+    }
     p2.symbol = (p1.symbol == 'x') ? 'o' : 'x';
-
-    std::cout << "\n=== PERSONNAGE 2 CREE ===\n";
-    std::cout << "Nom : " << p2.name << "\n";
-    std::cout << "Symbole : " << p2.symbol << "\n";
 
     Player players[2] = {p1, p2};
     for (int i = 0; i < 9; i++)
     {
         Player current_player = players[i % 2];
         int result;
-        do
+
+        if (mode == GameMode::ai && current_player.symbol == p2.symbol)
         {
-            result = play(current_player);
-            if (result == 1)
-                std::cout << "cette case est deja prise" << std::endl;
-        } while (result != 0);
+            ai_play(current_player);
+        }
+        else
+        {
+            do
+            {
+                result = play(current_player);
+                if (result == 1)
+                    std::cout << "cette case est deja prise" << std::endl;
+            } while (result != 0);
+        }
 
         draw_game_board(board);
         char winner = check_win();
