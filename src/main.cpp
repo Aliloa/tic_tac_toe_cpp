@@ -12,7 +12,7 @@ int draw_game_board(char board[9])
 
         std::cout << board[i] << " | ";
 
-        if ((i + 1) % 3 == 0) // quand i+1 divisé par 3 est égal à 0
+        if ((i + 1) % 3 == 0) // quand i+1 est divisble par 3
             std::cout << std::endl;
     }
     return 0;
@@ -27,22 +27,32 @@ int play(Player currentPlayer)
     return 0;
 }
 
-int check_win(){
-int win_condition[8][3] = {
-    {0, 1, 2},
-    {3, 4, 5},
-    {6, 7, 8},
-    {0, 3, 6},
-    {1, 4, 7},
-    {2, 5, 8},
-    {0, 4, 8},
-    {2, 4, 6}  
-};
- win_condition[1][2];
- for (int i=0; i<8; i++){
+char check_win()
+{
+    int win_condition[8][3] = {
+        {0, 1, 2},
+        {3, 4, 5},
+        {6, 7, 8},
+        {0, 3, 6},
+        {1, 4, 7},
+        {2, 5, 8},
+        {0, 4, 8},
+        {2, 4, 6}};
+    win_condition[1][2];
+    for (int i = 0; i < 8; i++)
+    {
+        int a = win_condition[i][0];
+        int b = win_condition[i][1];
+        int c = win_condition[i][2];
 
- }
-    // if (board[win_condition] == )
+        if (board[a] != '.' && board[a] == board[b] && board[a] == board[c])
+        {
+            std::cout << board[a] << "\n=== A GAGNE ===\n";
+
+            return board[a];
+        }
+    }
+    return '.';
 }
 
 int main()
@@ -61,12 +71,22 @@ int main()
     std::cout << "Nom : " << p2.name << "\n";
     std::cout << "Symbole : " << p2.symbol << "\n";
 
-    play(p1);
-    draw_game_board(board);
-    play(p2);
-    draw_game_board(board);
-    play(p1);
-    draw_game_board(board);
-
+    Player players[2] = {p1, p2};
+    for (int i = 0; i < 9; i++)
+    {
+        Player current_player = players[i % 2];
+        play(current_player);
+        draw_game_board(board);
+        char winner = check_win();
+        if (winner != '.')
+        {
+            std::cout << "Le joueur " << current_player.name << " a gagne !" << std::endl;
+            break;
+        }
+    }
+    if (check_win() == '.')
+    {
+        std::cout << "Match nul !" << std::endl;
+    }
     return 0;
 }
