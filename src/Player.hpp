@@ -9,6 +9,6 @@ struct Player
     char symbol;
 };
 
-Player createPlayer();
+Player createPlayer(int p);
 
 #endif
