@@ -19,7 +19,7 @@ Player createPlayer(int p)
             std::cin >> player.symbol;
             player.symbol = std::tolower(player.symbol);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (player.symbol == 'x' || player.symbol == 'o')
+            if (player.symbol == 'x' || player.symbol == 'o')//vérification si c'est le bon symbole
             {
                 break;
             }
@@ -27,7 +27,7 @@ Player createPlayer(int p)
         }
     }
     std::cout << "=== PERSONNAGE" << p << " CREE ===" << std::endl;
-    std::cout << "Nom : " << player.name << "\n";
-    std::cout << "Symbole : " << player.symbol << "\n";
+    std::cout << "Nom : " << player.name << std::endl;
+    std::cout << "Symbole : " << player.symbol << std::endl;
     return player;
 }

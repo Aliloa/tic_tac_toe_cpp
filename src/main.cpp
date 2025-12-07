@@ -13,13 +13,28 @@ GameMode select_mode()
 {
     std::cout << "=== SELECTIONNER UN MODE ===" << std::endl;
     std::cout << "1-multiplayer ou 2-ia : ";
-    int choix = {1};
-    std::cin >> choix;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    if (choix == 1)
+    char choix = {0};
+    while (true)
+    {
+        std::cin >> choix;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (choix == '1' || choix == '2') // verification si c bien une valeur attendue
+        {
+            break;
+        }
+        std::cout << "Erreur : entrez seulement '1' ou '2'" << std::endl;
+    }
+    if (choix == '1')
+    {
+        std::cout << "=== JOUEUR VS JOUEUR ===" << std::endl;
+
         return GameMode::multiplayer;
+    }
     else
+    {
+        std::cout << "=== JOUEUR VS IA === " << std::endl;
         return GameMode::ai;
+    }
 }
 
 int main()
@@ -39,9 +54,10 @@ int main()
     p2.symbol = (p1.symbol == 'x') ? 'o' : 'x';
 
     Player players[2] = {p1, p2};
+
     for (int i = 0; i < 9; i++)
     {
-        Player current_player = players[i % 2];
+        Player current_player = players[i % 2]; // on alterne entre 0 et 1 pour les valeurs du tableau pour switch les tours
         int result;
 
         if (mode == GameMode::ai && current_player.symbol == p2.symbol)

@@ -21,9 +21,9 @@ int draw_game_board(char board[9])
 
 void draw_help_board()
 {
-    std::cout << "| 1 | 2 | 3 |\n";
-    std::cout << "| 4 | 5 | 6 |\n";
-    std::cout << "| 7 | 8 | 9 |\n";
+    std::cout << "| 1 | 2 | 3 |" << std::endl;
+    std::cout << "| 4 | 5 | 6 |" << std::endl;
+    std::cout << "| 7 | 8 | 9 |" << std::endl;
 }
 
 int play(Player currentPlayer)
@@ -68,31 +68,38 @@ int play(Player currentPlayer)
     return 0;
 }
 
-int ai_play(Player current_player) {
+int ai_play(Player current_player)
+{
     std::cout << "Tour de : " << current_player.name << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 8);
     int value = {};
-    do {
-        value = distrib(gen);
-    } while (board[value] != '.');
+    char p_symbol = (current_player.symbol == 'x') ? 'o' : 'x';
+    value = ai_best_move(current_player.symbol, p_symbol);
 
+    if (value == -1)//si l'ia ne peut ni gagner ni bloquer le joueur alors valeur aléatoire
+    {
+        do
+        {
+            value = distrib(gen);
+        } while (board[value] != '.');
+    }
     board[value] = current_player.symbol;
     return 0;
 }
+int win_condition[8][3] = {
+    {0, 1, 2},
+    {3, 4, 5},
+    {6, 7, 8},
+    {0, 3, 6},
+    {1, 4, 7},
+    {2, 5, 8},
+    {0, 4, 8},
+    {2, 4, 6}};
 
 char check_win()
 {
-    int win_condition[8][3] = {
-        {0, 1, 2},
-        {3, 4, 5},
-        {6, 7, 8},
-        {0, 3, 6},
-        {1, 4, 7},
-        {2, 5, 8},
-        {0, 4, 8},
-        {2, 4, 6}};
     win_condition[1][2];
     for (int i = 0; i < 8; i++)
     {
@@ -106,4 +113,25 @@ char check_win()
         }
     }
     return '.';
+}
+
+int ai_best_move(char ai_symbol, char p_symbol)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        int a = win_condition[i][0];
+        int b = win_condition[i][1];
+        int c = win_condition[i][2];
+
+        //l'ia peut gagner?
+        if (board[a] == ai_symbol && board[b] == ai_symbol && board[c] == '.') return c;
+        if (board[a] == ai_symbol && board[c] == ai_symbol && board[b] == '.') return b;
+        if (board[b] == ai_symbol && board[c] == ai_symbol && board[a] == '.') return a;
+
+        //l'ia peut bloquer le joueur?
+        if (board[a] == p_symbol && board[b] == p_symbol && board[c] == '.') return c;
+        if (board[a] == p_symbol && board[c] == p_symbol && board[b] == '.') return b;
+        if (board[b] == p_symbol && board[c] == p_symbol && board[a] == '.') return a;
+    }
+    return -1;
 }
