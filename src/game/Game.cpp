@@ -2,6 +2,16 @@
 #include <iostream>
 #include <random>
 
+#define RED "\x1b[38;5;210m"
+#define GREEN "\033[32m"
+
+#define PINK_LIGHT "\x1b[38;5;225m"    // rose clair vif
+#define PINK "\x1b[38;5;212m"  // rose doux / dim
+#define YELLOW "\033[33m"
+
+#define LEAF_GREEN "\x1b[38;5;122m"   // vert feuille
+#define SKY_BLUE "\x1b[38;5;159m"     // ciel léger
+
 char board[9] = {'.', '.', '.', '.', '.', '.', '.', '.', '.'};
 
 int draw_game_board(char board[9])
@@ -9,9 +19,9 @@ int draw_game_board(char board[9])
     for (int i = 0; i < 9; i++)
     {
         if (i % 3 == 0)
-            std::cout << "| ";
+            std::cout << PINK << "| ";
 
-        std::cout << board[i] << " | ";
+        std::cout << SKY_BLUE << board[i] << PINK << " | ";
 
         if ((i + 1) % 3 == 0) // quand i+1 est divisble par 3
             std::cout << std::endl;
@@ -21,14 +31,14 @@ int draw_game_board(char board[9])
 
 void draw_help_board()
 {
-    std::cout << "| 1 | 2 | 3 |" << std::endl;
-    std::cout << "| 4 | 5 | 6 |" << std::endl;
-    std::cout << "| 7 | 8 | 9 |" << std::endl;
+    std::cout << YELLOW << "| 1 | 2 | 3 |" << std::endl;
+    std::cout << YELLOW << "| 4 | 5 | 6 |" << std::endl;
+    std::cout << YELLOW << "| 7 | 8 | 9 |" << std::endl;
 }
 
 int play(Player currentPlayer)
 {
-    std::cout << "Tour de " << currentPlayer.name << " : ";
+    std::cout << SKY_BLUE << "-> Tour de " << PINK << currentPlayer.name << " : ";
     std::string input;
     std::cin >> input;
     for (char &c : input)
@@ -47,13 +57,13 @@ int play(Player currentPlayer)
     }
     catch (const std::invalid_argument &)
     {
-        std::cout << "valeur invalide.\n";
+        std::cout << RED << "valeur invalide." << std::endl;
         return 2;
     }
 
     if (value < 1 || value > 9)
     {
-        std::cout << "valeur invalide.\n";
+        std::cout << RED << "valeur invalide." << std::endl;
         return 2;
     }
 
@@ -70,7 +80,7 @@ int play(Player currentPlayer)
 
 int ai_play(Player current_player)
 {
-    std::cout << "Tour de : " << current_player.name << std::endl;
+    std::cout << SKY_BLUE << "Tour de : " << PINK << current_player.name << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 8);
