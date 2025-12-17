@@ -39,7 +39,7 @@ void loading()
 
 void ai_thinking()
 {
-    std::cout << SKY_BLUE << "...reflexion";
+    std::cout << YELLOW << "reflexion";
     for (int i = 0; i < 3; i++)
     {
         std::cout << ".";
